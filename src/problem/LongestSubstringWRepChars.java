@@ -1,31 +1,24 @@
 package problem;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by DZCVT40 on 22.6.2016.
  */
 public class LongestSubstringWRepChars {
-    public static int lengthOfLongestSubstring(String s) {
-        if (s == null)
-            return 0;
-
+    public int lengthOfLongestSubstring(String s) {
+        int n = s.length();
         int longest = 0;
-        HashMap<Character, Integer> charMap = new HashMap<>();
-        for (int i = 0; i < s.length(); i++) {
-            char currentChar = s.charAt(i);
-            if(charMap.containsKey(currentChar)){
-                if(charMap.size()>longest){
-                    longest = charMap.size();
-                }
-                i = charMap.get(currentChar);
-                charMap.clear();
-
-            }else{
-                charMap.put(currentChar,i);
+        Map<Character, Integer> map = new HashMap<>(); // current index of character
+        // try to extend the range [i, j]
+        for (int j = 0, i = 0; j < n; j++) {
+            if (map.containsKey(s.charAt(j))) {
+                i = Math.max(map.get(s.charAt(j)), i);
             }
+            longest = Math.max(longest, j - i + 1);
+            map.put(s.charAt(j), j + 1);
         }
-
-        return Math.max(longest, charMap.size());
+        return longest;
     }
 }
