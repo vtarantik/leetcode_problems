@@ -8,22 +8,45 @@ import java.util.Map;
  */
 public class ZigZagConversion {
     public String convert(String s, int numRows) {
-        if (s.length() == 0) {
+        if (s.length() == 0 || numRows == 0) {
             return "";
         }
-        Map<Integer, String> rowMap = new HashMap<>();
-        for (int i = 1; i <= s.length(); i++) {
-            if (rowMap.get(i % (numRows + (numRows - 2))) != null) {
-                rowMap.put(i % (numRows + (numRows - 2)), rowMap.get(i % (numRows + (numRows - 2))) + s.charAt(i - 1));
-
+        if (numRows == 1) {
+            return s;
+        }
+        boolean backwards = false;
+        char current;
+        int pointer = 0;
+        String[] strings = new String[numRows];
+        for (int i = 0; i < s.length(); i++) {
+            current = s.charAt(i);
+            if (strings[pointer] == null) {
+                strings[pointer] = Character.toString(current);
             } else {
-                rowMap.put(i % (numRows + (numRows - 2)), Character.toString(s.charAt(i - 1)));
+                strings[pointer] += current;
+            }
+            if (backwards) {
+                if (pointer == 0) {
+                    pointer++;
+                    backwards = false;
+                } else {
+                    pointer--;
+                }
+            } else {
+                if (pointer == numRows - 1) {
+                    pointer--;
+                    backwards = true;
+                } else {
+                    pointer++;
+                }
             }
         }
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < numRows; i++) {
-            builder.append(rowMap.get(i));
+        String result = "";
+        for (String partialString: strings) {
+            if (partialString != null) {
+                result += partialString;
+            }
         }
-        return builder.toString();
+        return result;
     }
 }
